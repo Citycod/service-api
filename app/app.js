@@ -23,7 +23,7 @@ const app = express();
 
 //cors configuration
 const corsOptions = {
-  origin: "https://service-two-sand.vercel.app/",
+  origin: "https://service-two-sand.vercel.app",
   credentials: true, // Allow cookies to be sent
 };
 
