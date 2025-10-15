@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import { createError } from "../middlewares/globalErrHandler.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { sendRegisterNotificationEmail } from "../services/emailService.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -20,8 +21,19 @@ export const register = async (req, res, next) => {
       password: hash,
     });
 
+    // create notification
+    const notification = await Notification.create({
+      userId: user._id,
+      message: `<p>
+      Welcome to <strong>JoyDom</strong> – your trusted platform for professional artisan!
+    </p>`,
+    });
+    if (user && user.email) {
+      await sendRegisterNotificationEmail(user.email, user.username);
+    }
+
     await newUser.save();
-    res.status(201).send("User has been created.");
+    res.status(201).send("User registered successfully...");
   } catch (err) {
     next(err);
   }

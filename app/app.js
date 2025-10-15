@@ -21,23 +21,17 @@ dotenv.config();
 dbConnect();
 const app = express();
 
-//cors
-app.use(cors());
+//cors configuration
+const corsOptions = {
+  origin: "https://service-two-sand.vercel.app/",
+  credentials: true, // Allow cookies to be sent
+};
 
 // pass incoming data
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-// health check
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "OK",
-    message: "Joydome API is running",
-    timestamp: new Date().toISOString(),
-  });
-});
 
 // custom routes
 app.use("/api/auth", authRoute);
@@ -49,8 +43,7 @@ app.use("/api/messages", messageRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/admin", adminRoute);
 
-// error middleware
-// not found middleware
+// error handler and not found middleware
 app.use(notFound);
 app.use(globalErrhandler);
 
